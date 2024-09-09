@@ -4,7 +4,7 @@
 //   Переработано для Microsoft Visual Studio 2008 Сысоевым А.В. (19.04.2015)
 //
 // Множество - реализация через битовые поля
-
+// тест коммита
 #include "tset.h"
 
 // Fake variables used as placeholders in tests
