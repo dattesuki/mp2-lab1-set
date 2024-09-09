@@ -5,6 +5,7 @@
 //
 // Множество - реализация через битовые поля
 // тест коммита
+// тест коммита на маке
 #include "tset.h"
 
 // Fake variables used as placeholders in tests
