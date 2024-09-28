@@ -29,13 +29,13 @@ TBitField::TBitField(int len)
     }
 }
 
-TBitField::TBitField(const TBitField &bf) // конструктор копирования
+TBitField::TBitField(const TBitField& bf) // конструктор копирования
 {
-        BitLen = bf.BitLen; //проверка на кол-во эл-ов уже выполнялась
-        MemLen = BitLen / (sizeof(TELEM) * 8);
-        pMem = new TELEM[MemLen];
-        for (int i = 0; i < (MemLen); i++) {
-            pMem[i] = bf.pMem[i];
+    BitLen = bf.BitLen; //проверка на кол-во эл-ов уже выполнялась
+    MemLen = bf.MemLen;
+    pMem = new TELEM[MemLen];
+    for (int i = 0; i < (MemLen); i++) {
+        pMem[i] = bf.pMem[i];
     }
 }
 
@@ -65,7 +65,7 @@ TELEM TBitField::GetMemMask(const int n) const // битовая маска дл
 
 int TBitField::GetLength(void) const // получить длину (к-во битов)
 {
-  return BitLen;
+    return BitLen;
 }
 
 void TBitField::SetBit(const int n) // установить бит
@@ -93,14 +93,15 @@ int TBitField::GetBit(const int n) const // получить значение б
     if (n > BitLen) throw out_of_range("out_of_range"); //обработка ошибки, если происходит попытка доступа к элементу за границей заданного диапазона
     int NumberMem = MemLen - (n / (sizeof(TELEM) * 8)) - 1;
     int NumberElement = ((sizeof(TELEM) * 8) - 1) - (n % (sizeof(TELEM) * 8));
-    return (pMem[NumberMem]&(1 << NumberElement));
+    return (pMem[NumberMem] & (1 << NumberElement));
 }
 
 // битовые операции
 
-TBitField& TBitField::operator=(const TBitField &bf) // присваивание
+TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 {
     if (this != &bf) {
+        delete[] pMem;
         BitLen = bf.BitLen; //проверка на кол-во эл-ов уже выполнялась
         MemLen = BitLen / (sizeof(TELEM) * 8);
         pMem = new TELEM[MemLen];
@@ -111,40 +112,66 @@ TBitField& TBitField::operator=(const TBitField &bf) // присваивание
     return *this;
 }
 
-int TBitField::operator==(const TBitField &bf) const // сравнение
+int TBitField::operator==(const TBitField& bf) const // сравнение
 {
-    
-  return 1;
+    if (BitLen != bf.BitLen) throw logic_error("different_length_of_fields");
+    for (int i = 0; i < MemLen; i++) {
+        if (pMem[i] != bf.pMem[i]) return 0;
+    }
+    return 1;
 }
 
-int TBitField::operator!=(const TBitField &bf) const // сравнение
+int TBitField::operator!=(const TBitField& bf) const // сравнение
 {
-  return FAKE_INT;
+    if (BitLen != bf.BitLen) throw logic_error("different_length_of_fields");
+    int flag = MemLen;
+    for (int i = 0; i < MemLen; i++) {
+        if (pMem[i] == bf.pMem[i]) flag--;
+    }
+    if (flag == 0) return 0;
+    else return 1;
 }
 
-TBitField TBitField::operator|(const TBitField &bf) // операция "или"
+TBitField TBitField::operator|(const TBitField& bf) // операция "или"
 {
-    return FAKE_BITFIELD;
+    if (BitLen != bf.BitLen) throw logic_error("different_length_of_fields");
+    TBitField Result(*this);
+    for (int i = 0; i < MemLen; i++) Result.pMem[i] |= bf.pMem[i];
+    return Result;
 }
 
-TBitField TBitField::operator&(const TBitField &bf) // операция "и"
+TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 {
-    return FAKE_BITFIELD;
+    if (BitLen != bf.BitLen) throw logic_error("different_length_of_fields");
+    TBitField Result(*this);
+    for (int i = 0; i < MemLen; i++) Result.pMem[i] &= bf.pMem[i];
+    return Result;
 }
 
 TBitField TBitField::operator~(void) // отрицание
 {
-    return FAKE_BITFIELD;
+    TBitField Result(*this);
+    for (int i = 0; i < MemLen; i++) {
+        Result.pMem[i] = ~(pMem[i]);
+    }
+    return Result;
 }
 
 // ввод/вывод
 
-istream &operator>>(istream &istr, TBitField &bf) // ввод
+istream& operator>>(istream& istr, TBitField& bf) // ввод
 {
     return istr;
 }
 
-ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
+ostream& operator<<(ostream& ostr, const TBitField& bf) // вывод
 {
+    unsigned int StartNumberElement = (sizeof(TELEM) * 8) - (bf.BitLen % (sizeof(TELEM) * 8)) - 1;
+    for (int shift = StartNumberElement; shift < (sizeof(TELEM) * 8); shift++) ostr << ((bf.pMem[0] >> shift) & 1);
+    if (bf.MemLen > 0) {
+        for (int i = 1; i < bf.MemLen; i++) {
+            for (int shift = 0; shift < (sizeof(TELEM) * 8); shift++) ostr << ((bf.pMem[i] >> shift) & 1);
+        }
+    }
     return ostr;
 }
