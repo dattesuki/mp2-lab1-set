@@ -312,13 +312,6 @@ TEST(TBitField, bitfields_with_different_bits_are_not_equal)
 
 //вручную написанные тесты:
 
-/*
-TEST(TBitField, combining_three_fields_and_negation) {
-    
-    EXPECT_EQ(bf1, bf2);
-}
-*/
-
 //тест 1, проверка: установки бита, отрицания, приравнивания, работы с полями разной длины, применения нескольких операторов в одном выражении без скобок
 TEST(TBitField, combining_three_fields_and_negation) {
     TBitField bf1(3), bf2(2), bf3(1), bf4(3),bf5(3);
@@ -342,3 +335,40 @@ TEST(TBitField, intersection_and_union) {
     bf3.SetBit(0); //bf3=00111
     EXPECT_EQ(bf1, bf3);
 }
+
+
+//тест 3, проверка перегрузки вывода 1
+TEST(TBitField, test_output1) {
+    TBitField bf(5); //00000
+    bf.SetBit(1);//00010
+    bf.SetBit(4);//10010
+
+    //ловим вывод в строку output1
+    testing::internal::CaptureStdout();
+    std::cout << bf;
+    std::string output1 = testing::internal::GetCapturedStdout();
+
+    testing::internal::CaptureStdout();
+    std::cout << "10010";
+    std::string output2 = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output1,output2);
+}
+
+//тест 4, проверка перегрузки вывода 2
+TEST(TBitField, test_output2) {
+    TBitField bf(5); //00000
+    bf.SetBit(1);//00010
+    bf.SetBit(4);//10010
+
+    testing::internal::CaptureStdout();
+    std::cout << bf;
+    std::string output1 = testing::internal::GetCapturedStdout();
+
+    testing::internal::CaptureStdout();
+    std::cout << "10011";
+    std::string output2 = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output1, output2);
+}
+

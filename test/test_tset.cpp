@@ -295,3 +295,16 @@ TEST(TSet, check_negation_operator)
 
   EXPECT_EQ(expSet, set1);
 }
+//вручную написанные тесты:
+TEST(TSet, throws_when_out_of_range1)
+{
+	TSet set1(8);
+	
+	ASSERT_ANY_THROW(set1.InsElem(8));
+}
+
+TEST(TSet, throws_when_out_of_range2)
+{
+	TSet set1(32);
+	ASSERT_ANY_THROW(set1.DelElem(32));
+}
