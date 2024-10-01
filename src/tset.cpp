@@ -129,7 +129,11 @@ TSet TSet::operator~(void) // дополнение
 istream &operator>>(istream &istr, TSet &s) // ввод
 {
     istr >> s.BitField;
-    s.MaxPower = s.BitField.GetLength();
+
+    //приведение битового поля к изначальной длине
+    TBitField temp(s.MaxPower);
+    s.BitField = s.BitField.DifferentLength(temp, s.BitField);
+
     return istr;
 }
 
