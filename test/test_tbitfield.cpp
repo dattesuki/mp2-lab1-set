@@ -309,3 +309,36 @@ TEST(TBitField, bitfields_with_different_bits_are_not_equal)
 
   EXPECT_NE(bf1, bf2);
 }
+
+//вручную написанные тесты:
+
+/*
+TEST(TBitField, combining_three_fields_and_negation) {
+    
+    EXPECT_EQ(bf1, bf2);
+}
+*/
+
+//тест 1, проверка: установки бита, отрицания, приравнивания, работы с полями разной длины, применения нескольких операторов в одном выражении без скобок
+TEST(TBitField, combining_three_fields_and_negation) {
+    TBitField bf1(3), bf2(2), bf3(1), bf4(3),bf5(3);
+    bf1.SetBit(2); //100
+    bf2.SetBit(1); //10
+    bf3.SetBit(0); //1
+    bf4 = bf1 | bf2 | bf3; //111
+    bf4 = ~bf4; //000
+
+    EXPECT_EQ(bf4, bf5);
+}
+
+//тест 2, проверка: отрицания, пересечения, и сравнения полей разных длин
+TEST(TBitField, intersection_and_union) {
+    TBitField bf1(5), bf2(4), bf3(5);
+    bf2 = ~bf2; // 1111
+    bf1 = bf1 | bf2; //01111
+    bf3.SetBit(3);
+    bf3.SetBit(2);
+    bf3.SetBit(1);
+    bf3.SetBit(0); //bf3=00111
+    EXPECT_EQ(bf1, bf3);
+}
