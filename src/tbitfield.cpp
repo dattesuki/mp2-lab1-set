@@ -19,6 +19,7 @@ TBitField::TBitField(int len)
     BitLen = len - 1; //количество элементов
     MemLen = (len / (sizeof(TELEM) * 8)) + 1;//к-во эл-тов Мем для представления бит.поля = количество элементов / количество элементов в TELEM (+1 для хвоста)
     pMem = new TELEM[MemLen]{};
+    if (pMem == nullptr) throw domain_error("domain_error");
     for (int i = 0; i < (MemLen); i++) {
         pMem[i] = 0;
     }
@@ -29,6 +30,7 @@ TBitField::TBitField(const TBitField& bf) // конструктор копиро
     BitLen = bf.BitLen;
     MemLen = bf.MemLen;
     pMem = new TELEM[MemLen];
+    if (pMem == nullptr) throw domain_error("domain_error");
     for (int i = 0; i < (MemLen); i++) {
         pMem[i] = bf.pMem[i];
     }
@@ -108,6 +110,7 @@ TBitField& TBitField::operator=(const TBitField& bf) // присваивание
         BitLen = bf.BitLen;
         MemLen = bf.MemLen;
         pMem = new TELEM[MemLen];
+        if (pMem == nullptr) throw domain_error("domain_error");
         for (int i = 0; i < (MemLen); i++) {
             pMem[i] = bf.pMem[i];
         }

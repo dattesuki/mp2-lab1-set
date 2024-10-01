@@ -372,3 +372,4 @@ TEST(TBitField, test_output2) {
     EXPECT_NE(output1, output2);
 }
 
+
