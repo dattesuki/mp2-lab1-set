@@ -145,7 +145,7 @@ int TBitField::operator==(const TBitField& bf) const // сравнение
 
 int TBitField::operator!=(const TBitField& bf) const // сравнение
 {
-    //приведение двух полей к одной длине
+    /*    //приведение двух полей к одной длине
     TBitField bf1(0), bf2(0);
     if (BitLen > bf.BitLen) {
         bf2 = DifferentLength(*this, bf); //меньшее поле приводится к длине большего
@@ -163,8 +163,8 @@ int TBitField::operator!=(const TBitField& bf) const // сравнение
     //сравнение остальных pMem(за исключением нулевого)
     for (int i = 1; i < MemLen; i++) {
         if (bf1.pMem[i] != bf2.pMem[i]) return 1;
-    }
-    return 0;
+    }*/
+    return !(*this==bf);
 }
 
 TBitField TBitField::operator|(const TBitField& bf) // операция "или"
