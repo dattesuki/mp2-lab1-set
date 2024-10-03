@@ -120,7 +120,7 @@ TBitField TBitField::operator|(const TBitField& bf) // операция "или"
     TBitField Result(max(BitLen, bf.BitLen));
     for (int i = 0; i < min(MemLen, bf.MemLen); i++) Result.pMem[i] = (pMem[i] | bf.pMem[i]);
 
-    for (int i = min(MemLen, bf.MemLen) + 1; i < max(MemLen, bf.MemLen); i++) {
+    for (int i = min(MemLen, bf.MemLen); i < max(MemLen, bf.MemLen); i++) {
         if (MemLen > bf.MemLen) Result.pMem[i] = pMem[i];
         else Result.pMem[i] = bf.pMem[i];
     }
