@@ -18,8 +18,8 @@ TBitField::TBitField(int len)
     BitLen = len; //количество элементов
     MemLen = (len / (sizeof(TELEM) * 8)) + 1;//к-во эл-тов Мем для представления бит.поля = количество элементов / количество элементов в TELEM (+1 для хвоста)
     pMem = new TELEM[MemLen];
-    for (int i = 0; i < MemLen; i++) pMem[i] = (TELEM)0;
     if (pMem == nullptr) throw domain_error("domain_error");
+    for (int i = 0; i < MemLen; i++) pMem[i] = (TELEM)0;
 }
 
 
