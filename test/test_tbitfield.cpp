@@ -314,7 +314,7 @@ TEST(TBitField, bitfields_with_different_bits_are_not_equal)
 
 //тест 1, проверка: установки бита, отрицания, приравнивания, работы с полями разной длины, применения нескольких операторов в одном выражении без скобок
 TEST(TBitField, combining_three_fields_and_negation) {
-    TBitField bf1(3), bf2(2), bf3(1), bf4(3),bf5(3);
+    TBitField bf1(3), bf2(3), bf3(3), bf4(3),bf5(3);
     bf1.SetBit(2); //100
     bf2.SetBit(1); //10
     bf3.SetBit(0); //1
