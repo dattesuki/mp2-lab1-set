@@ -90,7 +90,7 @@ TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 {
     if (this != &bf) {
 
-        if (BitLen != bf.BitLen) {
+        if (BitLen != bf.BitLen) { //если поля одной длины, то не надо выделять память заново
         BitLen = bf.BitLen;
         MemLen = bf.MemLen;
         delete[] pMem;
@@ -105,8 +105,9 @@ TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 }
 
 int TBitField::operator==(const TBitField& bf) const {// сравнение;
-    if (BitLen != bf.BitLen) return 0;
-    for (int i = 0; i < BitLen; i++) if (GetBit(i) != bf.GetBit(i)) return 0;
+    if (BitLen != bf.BitLen) return 0; \
+        for (int i = BitLen - 1; i >= (bf.MemLen * sizeof(TELEM) * 8); i--) if (GetBit(i) != bf.GetBit(i)) return 0;
+    for (int i = 1; i < BitLen; i++) if (GetBit(i) != bf.GetBit(i)) return 0;
     return 1;
 }
 
