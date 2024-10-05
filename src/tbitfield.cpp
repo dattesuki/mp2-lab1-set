@@ -20,7 +20,7 @@ TBitField::TBitField(int len)
     MemLen = (len / (sizeof(TELEM) * 8)) + 1;//к-во эл-тов Мем для представления бит.поля = количество элементов / количество элементов в TELEM (+1 для хвоста)
     pMem = new TELEM[MemLen];
     if (pMem == nullptr) throw domain_error("domain_error");
-    for (int i = 0; i < MemLen; i++) pMem[i] = (TELEM)0;
+    for (int i = 0; i < MemLen; i++) pMem[i] = 0;
 }
 
 
@@ -97,7 +97,7 @@ TBitField& TBitField::operator=(const TBitField& bf) // присваивание
             pMem = new TELEM[MemLen];
         }
         if (pMem == nullptr) throw domain_error("domain_error");
-        for (int i = 0; i < MemLen + 1; i++) {
+        for (int i = 0; i < MemLen; i++) {
             pMem[i] = bf.pMem[i];
         }
         return *this;
@@ -141,7 +141,7 @@ TBitField TBitField::operator~(void) // отрицание
     for (int i = 0; i < MemLen - 1; i++) {
         Result.pMem[i] = ~pMem[i];
     }
-    
+    //обработка хвоста
     for (int i = ((MemLen-1)*sizeof(TELEM)*8); i < GetLength(); i++) {
         if (GetBit(i) == 0) Result.SetBit(i);
         else Result.ClrBit(i);
@@ -157,7 +157,7 @@ istream& operator>>(istream& istr, TBitField& bf) // ввод
     string InputData;
     istr >> InputData;
 
-    for (int i = 0; i < bf.MemLen; i++) bf.pMem[i] = 0;
+    for (int i = 0; i < bf.MemLen; i++) bf.pMem[i] = (TELEM)0;
 
     for (int i = 0; i < bf.GetLength(); i++) {
         if (InputData[i] == '1') bf.SetBit(bf.GetLength() - i);
