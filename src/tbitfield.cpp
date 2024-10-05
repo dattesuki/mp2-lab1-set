@@ -6,7 +6,8 @@
 // Битовое поле
 
 #include "tbitfield.h"
-
+#include <algorithm>
+#include <string>
 
 // Fake variables used as placeholders in tests
 static const int FAKE_INT = -1;
@@ -51,7 +52,7 @@ TELEM TBitField::GetMemMask(const int n) const // битовая маска дл
 {
     if (n < 0) throw std::underflow_error("underflow_error"); //обработка ошибки, если элемент отрицательный
     if (n >= BitLen) throw out_of_range("out_of_range"); //обработка ошибки, если происходит попытка доступа к элементу за границей заданного диапазона
-    return (1 << ((n % (sizeof(TELEM) * 8))));
+    return ((TELEM)1 << ((n % (sizeof(TELEM) * 8))));
 }
 
 // доступ к битам битового поля
@@ -89,14 +90,13 @@ int TBitField::GetBit(const int n) const // получить значение б
 TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 {
     if (this != &bf) {
-
-        if (BitLen != bf.BitLen) { //если поля одной длины, то не надо выделять память заново
         BitLen = bf.BitLen;
-        MemLen = bf.MemLen;
-        delete[] pMem;
-        pMem = new TELEM[MemLen];
+        if (MemLen != bf.MemLen) {
+            MemLen = bf.MemLen;
+            delete[] pMem;
+            pMem = new TELEM[MemLen];
+        }
         if (pMem == nullptr) throw domain_error("domain_error");
-    }
         for (int i = 0; i < MemLen + 1; i++) {
             pMem[i] = bf.pMem[i];
         }
@@ -105,9 +105,8 @@ TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 }
 
 int TBitField::operator==(const TBitField& bf) const {// сравнение;
-    if (BitLen != bf.BitLen) return 0; \
-        for (int i = BitLen - 1; i >= (bf.MemLen * sizeof(TELEM) * 8); i--) if (GetBit(i) != bf.GetBit(i)) return 0;
-    for (int i = 1; i < BitLen; i++) if (GetBit(i) != bf.GetBit(i)) return 0;
+    if (BitLen != bf.BitLen) return 0; 
+    for (int i = 0; i < MemLen; i++) if (pMem[i]!=bf.pMem[i]) return 0;
     return 1;
 }
 
@@ -139,8 +138,11 @@ TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 TBitField TBitField::operator~(void) // отрицание
 {
     TBitField Result(*this);
-
-    for (int i = 0; i < Result.GetLength(); i++) {
+    for (int i = 0; i < MemLen - 1; i++) {
+        Result.pMem[i] = ~pMem[i];
+    }
+    
+    for (int i = ((MemLen-1)*sizeof(TELEM)*8); i < GetLength(); i++) {
         if (GetBit(i) == 0) Result.SetBit(i);
         else Result.ClrBit(i);
     }
