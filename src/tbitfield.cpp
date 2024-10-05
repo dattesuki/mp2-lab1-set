@@ -105,8 +105,8 @@ TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 }
 
 int TBitField::operator==(const TBitField& bf) const {// сравнение;
-    if (BitLen != bf.BitLen) return 0; 
-    for (int i = 0; i < MemLen; i++) if (pMem[i]!=bf.pMem[i]) return 0;
+    if (BitLen != bf.BitLen) return 0;
+    for (int i = 0; i < MemLen; i++) if (pMem[i] != bf.pMem[i]) return 0;
     return 1;
 }
 
@@ -138,15 +138,19 @@ TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 TBitField TBitField::operator~(void) // отрицание
 {
     TBitField Result(*this);
-    for (int i = 0; i < MemLen - 1; i++) {
+    for (int i = 0; i < MemLen; i++) {
         Result.pMem[i] = ~pMem[i];
     }
-    //обработка хвоста
-    for (int i = ((MemLen-1)*sizeof(TELEM)*8); i < GetLength(); i++) {
-        if (GetBit(i) == 0) Result.SetBit(i);
-        else Result.ClrBit(i);
+    /*
+   for (int i = ((MemLen - 1) * sizeof(TELEM) * 8); i < GetLength(); i++) {
+       if (GetBit(i) == 0) Result.SetBit(i);
+       else Result.ClrBit(i);
+   }*/
+    if((BitLen % (sizeof(TELEM) * 8))!=0){
+        //если не поставить TELEM перед 1, то работает некорректно
+    TELEM mask = ((TELEM)1 << (BitLen % (sizeof(TELEM) * 8))) - 1;
+    Result.pMem[MemLen - 1] &= mask;
     }
-
     return Result;
 }
 
